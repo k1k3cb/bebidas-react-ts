@@ -8,7 +8,8 @@ const Header = () => {
     ingredient: '',
     category: ''
   });
-  const { categories, fetchCategories ,searchRecipes} = useAppStore();
+  const { categories, fetchCategories, searchRecipes, showNotification } =
+    useAppStore();
   const isHome = useMemo(() => pathname === '/', [pathname]);
 
   useEffect(() => {
@@ -27,13 +28,16 @@ const Header = () => {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (Object.values(searchFilters).includes('')) {
-      alert('Todos los campos son obligatorios');
-      return
+      showNotification({
+        text: 'Todos los campos son obligatorios',
+        error: true
+      });
+      return;
     }
 
     //consultar las recetas
 
-    searchRecipes(searchFilters)
+    searchRecipes(searchFilters);
   };
 
   return (

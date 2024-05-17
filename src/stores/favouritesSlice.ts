@@ -1,5 +1,9 @@
 import { StateCreator } from 'zustand';
 import { Recipe } from '../types';
+import {
+  NotificationSlideProps,
+  createNotificationSlice
+} from './notificationSlice';
 
 export interface FavouritesSlideProps {
   favourites: Recipe[];
@@ -8,10 +12,12 @@ export interface FavouritesSlideProps {
   loadFromStorage: () => void;
 }
 
-export const createFavouritesSlice: StateCreator<FavouritesSlideProps> = (
-  set,
-  get
-) => ({
+export const createFavouritesSlice: StateCreator<
+  FavouritesSlideProps & NotificationSlideProps,
+  [],
+  [],
+  FavouritesSlideProps
+> = (set, get, api) => ({
   favourites: [],
   handleClickFavourite: recipe => {
     if (
@@ -22,9 +28,16 @@ export const createFavouritesSlice: StateCreator<FavouritesSlideProps> = (
           favourite => favourite.idDrink !== recipe.idDrink
         )
       }));
+      createNotificationSlice(set, get, api).showNotification({
+        text: 'Receta eliminada de favoritos',
+        error: false
+      });
     } else {
-      console.log('no lo tienes en favoritos');
       set(state => ({ favourites: [...state.favourites, recipe] }));
+      createNotificationSlice(set, get, api).showNotification({
+        text: 'Receta agregada a favoritos',
+        error: false
+      });
     }
     localStorage.setItem('favourites', JSON.stringify(get().favourites));
   },
