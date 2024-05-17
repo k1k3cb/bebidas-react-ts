@@ -1,8 +1,16 @@
+import { useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
 import Header from '../components/Header';
 import Modal from '../components/Modal';
+import { useAppStore } from '../stores/useAppStore';
 
 const Layout = () => {
+  const { loadFromStorage } = useAppStore();
+
+  useEffect(() => {
+    loadFromStorage();
+  }, []);
+
   return (
     <>
       <Header />
@@ -15,3 +23,4 @@ const Layout = () => {
 };
 
 export default Layout;
+
